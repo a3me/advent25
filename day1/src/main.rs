@@ -7,7 +7,70 @@
 
 use std::fs;
 
-fn move_dial(mut dial: i32, direction: char, mut steps: i32) -> i32 {
+fn move_dial_part_2(mut dial: i32, direction: char, mut steps: i32, mut hits: i32) -> (i32, i32) {
+    let current_dial = dial;
+    let current_steps = steps;
+    let mut crossed_zero = false;
+    let mut new_hits = 0;
+
+    // if a number of steps is larger than 99 in either direction
+    // we can ignore these full rotations (100 steps for 1 full rotation)
+    if steps > 99 {
+        // we're spinning past 0 here if we move 100
+        new_hits += steps / 100;
+        // with whatevers left, we might cross or land on 0 again
+        steps = steps % 100;
+    }
+
+    // now match direction and go forwards and backwards on the dial
+    match direction {
+        'L' => {
+            // println!("left | steps: {} dial: {}", steps, dial);
+            // check if we are crossing the 0 mark on the dial
+            if dial - steps < 0 {
+                dial -= steps;
+                dial += 100;
+                crossed_zero = true;
+                if current_dial != 0 {
+                    new_hits += 1;
+                }
+            } else {
+                dial -= steps;
+            }
+        }
+        'R' => {
+            // println!("right | steps: {} dial: {}", steps, dial);
+            // check if we are crossing the 0 mark on the dial
+            if dial + steps > 99 {
+                dial += steps;
+                dial -= 100; // we crossed it!
+                crossed_zero = true;
+                if current_dial != 0 {
+                    new_hits += 1;
+                }
+            } else {
+                dial += steps;
+            }
+        }
+        _ => {}
+    }
+
+    // we moved and now the dial is on 0, we get to count a hit.
+    if !crossed_zero && dial == 0 {
+        new_hits += 1;
+    }
+
+    hits += new_hits;
+
+    println!(
+        "{} | dial: {} steps: {} hits: {}",
+        direction, current_dial, current_steps, new_hits
+    );
+
+    return (dial, hits);
+}
+
+fn move_dial(mut dial: i32, direction: char, mut steps: i32, mut hits: i32) -> (i32, i32) {
     // if a number of steps is larger than 99 in either direction
     // we can ignore these full rotations (100 steps for 1 full rotation)
     if steps > 99 {
@@ -16,7 +79,7 @@ fn move_dial(mut dial: i32, direction: char, mut steps: i32) -> i32 {
     // now match direction and go forwards and backwards on the dial
     match direction {
         'L' => {
-            println!("left | steps: {} dial: {}", steps, dial);
+            // println!("left | steps: {} dial: {}", steps, dial);
             // check if we are crossing the 0 mark on the dial
             if dial - steps < 0 {
                 dial -= steps;
@@ -26,7 +89,7 @@ fn move_dial(mut dial: i32, direction: char, mut steps: i32) -> i32 {
             }
         }
         'R' => {
-            println!("right | steps: {} dial: {}", steps, dial);
+            // println!("right | steps: {} dial: {}", steps, dial);
             // check if we are crossing the 0 mark on the dial
             if dial + steps > 99 {
                 dial += steps;
@@ -37,17 +100,24 @@ fn move_dial(mut dial: i32, direction: char, mut steps: i32) -> i32 {
         }
         _ => {}
     }
-    return dial;
+
+    if dial == 0 {
+        hits += 1;
+    }
+
+    return (dial, hits);
 }
 
 fn main() {
     let contents = fs::read_to_string("input.txt").expect("Should have been able to read the file");
 
     // dial starts at 50
-    let mut dial = 50;
+    let mut dial_part1 = 50;
+    let mut dial_part2 = 50;
 
     // count the number of times we hit 0
-    let mut zero_hits = 0;
+    let mut zero_hits_part1 = 0;
+    let mut zero_hits_part2 = 0;
 
     // iterate lines in file
     contents.split('\n').for_each(|line| {
@@ -61,11 +131,15 @@ fn main() {
         let steps: i32 = line_chars.as_str().parse().unwrap();
 
         // move the dial
-        dial = move_dial(dial, direction, steps);
-        if dial == 0 {
-            zero_hits += 1;
-        }
+        let part1 = move_dial(dial_part1, direction, steps, zero_hits_part1);
+        dial_part1 = part1.0;
+        zero_hits_part1 = part1.1;
+
+        let part2 = move_dial_part_2(dial_part2, direction, steps, zero_hits_part2);
+        dial_part2 = part2.0;
+        zero_hits_part2 = part2.1;
     });
 
-    println!("password is: {}", zero_hits)
+    println!("password 1 is: {}", zero_hits_part1);
+    println!("password 2 is: {}", zero_hits_part2);
 }
