@@ -8,8 +8,9 @@
 use std::fs;
 
 fn move_dial_part_2(mut dial: i32, direction: char, mut steps: i32, mut hits: i32) -> (i32, i32) {
-    let current_dial = dial;
+    let old = dial;
     let current_steps = steps;
+
     let mut crossed_zero = false;
     let mut new_hits = 0;
 
@@ -31,7 +32,7 @@ fn move_dial_part_2(mut dial: i32, direction: char, mut steps: i32, mut hits: i3
                 dial -= steps;
                 dial += 100;
                 crossed_zero = true;
-                if current_dial != 0 {
+                if old != 0 {
                     new_hits += 1;
                 }
             } else {
@@ -45,7 +46,7 @@ fn move_dial_part_2(mut dial: i32, direction: char, mut steps: i32, mut hits: i3
                 dial += steps;
                 dial -= 100; // we crossed it!
                 crossed_zero = true;
-                if current_dial != 0 {
+                if old != 0 {
                     new_hits += 1;
                 }
             } else {
@@ -64,7 +65,7 @@ fn move_dial_part_2(mut dial: i32, direction: char, mut steps: i32, mut hits: i3
 
     println!(
         "{} | dial: {} steps: {} hits: {}",
-        direction, current_dial, current_steps, new_hits
+        direction, old, current_steps, new_hits
     );
 
     return (dial, hits);
@@ -109,7 +110,7 @@ fn move_dial(mut dial: i32, direction: char, mut steps: i32, mut hits: i32) -> (
 }
 
 fn main() {
-    let contents = fs::read_to_string("input.txt").expect("Should have been able to read the file");
+    let contents = fs::read_to_string("input_old.txt").expect("Should have been able to read the file");
 
     // dial starts at 50
     let mut dial_part1 = 50;
