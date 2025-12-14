@@ -98,26 +98,26 @@ fn main() {
 
         highest_batteries[0].1 = batteries[0].to_digit(10).unwrap();
 
-        println!("bank: {}", bank);
+        //println!("bank: {}", bank);
 
         let mut previous_start_index = 0;
 
         for i in 0..BATTERY_COUNT {
-            println!("battery: {}", i);
+            //println!("battery: {}", i);
             // if we're not the first index, start looking at batteries
             // that are after the previous one found
             if i > 0 {
                 previous_start_index = highest_batteries[i - 1].0 + 1;
             }
-            println!(
-                "looking from index {} to {}",
-                previous_start_index,
-                batteries.len() - 11 + i 
-            );
+            // println!(
+            //     "looking from index {} to {}",
+            //     previous_start_index,
+            //     batteries.len() - 11 + i 
+            // );
             for j in previous_start_index..batteries.len() - 11 + i {
                 let battery_joltage: u32 = batteries[j].to_digit(10).unwrap();
                 if battery_joltage > highest_batteries[i].1 {
-                    println!("found bigga battery @ {} with joltage: {}", j, battery_joltage);
+                    //println!("found bigga battery @ {} with joltage: {}", j, battery_joltage);
                     highest_batteries[i].0 = j;
                     highest_batteries[i].1 = battery_joltage;
                 }
@@ -142,7 +142,7 @@ fn main() {
         .parse()
         .unwrap();
 
-        println!("joltage: {}\n\n", joltage);
+        //println!("joltage: {}\n\n", joltage);
 
         part2_total_joltage += joltage;
     });
