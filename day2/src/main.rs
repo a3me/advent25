@@ -30,10 +30,8 @@ fn part1(input_string: &str) -> usize {
         // if an end range is even but its starting range is odd,
         // the starting range can be bumped to the start of the next
         // even range
-        if start_len % 2 > 0 {
-            // println!("odd start range! start {}", start);
-            // start_int = 10_usize.pow(start_len);
-            start_int = 10;
+        if start_int < 10 {
+            start_int = 10; 
         }
 
         for x in start_int..end_int {
@@ -93,7 +91,8 @@ fn part2(input_string: &str) -> usize {
                 let first_chunk = x_chunks[0];
                 let invalid = x_chunks.iter().all(|a| *a == first_chunk);
                 if invalid {
-                    // println!("invalid id {} - chunk size: {} - {:?}", x, *cl, x_chunks);
+                    //println!("invalid id {} - chunk size: {} - {:?}", x, *cl, x_chunks);
+                    print!("{},", x);
                     invalid_ids.push(x);
                     break;
                 }
@@ -106,7 +105,7 @@ fn part2(input_string: &str) -> usize {
 
 fn main() {
     let input_string =
-        fs::read_to_string("input.txt").expect("Should have been able to read the file");
+        fs::read_to_string("input_k.txt").expect("Should have been able to read the file");
 
     let part1_result = part1(&input_string);
     let part2_result = part2(&input_string);
